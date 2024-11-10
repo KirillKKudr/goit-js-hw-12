@@ -12,7 +12,6 @@ let currentQuery = '';
 let totalHits = 0;
 let lightbox = new SimpleLightbox('.gallery-list a');
 
-
 loadMoreButton.style.display = 'none';
 
 const showLoader = () => {
@@ -28,7 +27,7 @@ const hideLoader = () => {
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   galleryContainer.innerHTML = '';
-  loadMoreButton.style.display = 'none'; 
+  loadMoreButton.style.display = 'none';
   currentQuery = event.currentTarget.elements.search.value.trim();
   currentPage = 1;
 
@@ -37,7 +36,7 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
-  await loadImages();
+  await loadImages(); 
 });
 
 loadMoreButton.addEventListener('click', async () => {
@@ -59,9 +58,12 @@ async function loadImages() {
     } else {
       renderImages(hits, galleryContainer);
       lightbox.refresh();
-      smoothScroll();
 
       
+      if (currentPage > 1) {
+        smoothScroll();
+      }
+
       if (currentPage * perPage >= totalHits) {
         loadMoreButton.style.display = 'none';
         showEndOfResultsMessage();
