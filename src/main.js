@@ -1,16 +1,19 @@
 import { fetchImages } from './js/pixabay-api';
-import { renderImages, showNoResultsMessage } from './js/render-functions';
+import { renderImages, showNoResultsMessage, showEndOfResultsMessage } from './js/render-functions';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
 
 const form = document.querySelector('.search-form');
 const galleryContainer = document.querySelector('.gallery-list');
-const perPage = 12;
+const loadMoreButton = document.querySelector('.load-more'); 
+const perPage = 15;
 let currentPage = 1;
+let currentQuery = '';
+let totalHits = 0;
 let lightbox = new SimpleLightbox('.gallery-list a');
 
+
+loadMoreButton.style.display = 'none';
 
 const showLoader = () => {
   const loader = document.querySelector('.loader');
@@ -22,32 +25,62 @@ const hideLoader = () => {
   if (loader) loader.classList.remove('show');
 };
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const query = event.currentTarget.elements.search.value.trim();
+  galleryContainer.innerHTML = '';
+  loadMoreButton.style.display = 'none'; 
+  currentQuery = event.currentTarget.elements.search.value.trim();
+  currentPage = 1;
 
-  if (query === '') {
+  if (currentQuery === '') {
     showNoResultsMessage();
     return;
   }
 
-  showLoader(); 
-  galleryContainer.innerHTML = ''; 
-
-  fetchImages(query, currentPage, perPage)
-    .then(images => {
-      hideLoader(); 
-      if (images.length === 0) {
-        showNoResultsMessage();
-      } else {
-        renderImages(images, galleryContainer);
-        lightbox.refresh(); 
-      }
-      form.reset(); 
-    })
-    .catch(error => {
-      hideLoader(); 
-      console.error('Error processing images:', error);
-      iziToast.error({ title: 'Error', message: 'Failed to load images' });
-    });
+  await loadImages();
 });
+
+loadMoreButton.addEventListener('click', async () => {
+  currentPage += 1;
+  await loadImages();
+});
+
+async function loadImages() {
+  showLoader();
+  try {
+    const { hits, totalHits: fetchedTotalHits } = await fetchImages(currentQuery, currentPage, perPage);
+    hideLoader();
+
+    if (currentPage === 1) totalHits = fetchedTotalHits;
+
+    if (hits.length === 0) {
+      showNoResultsMessage();
+      loadMoreButton.style.display = 'none'; 
+    } else {
+      renderImages(hits, galleryContainer);
+      lightbox.refresh();
+      smoothScroll();
+
+      
+      if (currentPage * perPage >= totalHits) {
+        loadMoreButton.style.display = 'none';
+        showEndOfResultsMessage();
+      } else {
+        loadMoreButton.style.display = 'block'; 
+      }
+    }
+  } catch (error) {
+    hideLoader();
+    console.error('Error processing images:', error);
+    iziToast.error({ title: 'Error', message: 'Failed to load images' });
+  }
+}
+
+function smoothScroll() {
+  const cardHeight = document.querySelector('.gallery-item').getBoundingClientRect().height;
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
+

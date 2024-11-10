@@ -24,7 +24,6 @@ body {
   }
   
   .btn-search {
-    /* border-radius: 8px; */
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   
@@ -109,7 +108,7 @@ body {
     margin-right: auto;
   }
   
-  .gallery {
+  .gallery-container {
     display: flex;
     flex-wrap: wrap;
     row-gap: 20px;
@@ -185,3 +184,23 @@ body {
     line-height: 1.5;
     letter-spacing: 0.04em;
   }
+
+  .load-more {
+    display: none;
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFF;
+    background-color: #2d313f;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 300ms ease;
+    margin: 20px auto; 
+  }
+  
+  .load-more:hover {
+    background-color: #5c6172;
+  }
+  

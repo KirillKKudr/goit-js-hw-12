@@ -1,6 +1,6 @@
+
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
-
 
 export const showNoResultsMessage = () => {
   iziToast.info({
@@ -9,6 +9,12 @@ export const showNoResultsMessage = () => {
   });
 };
 
+export const showEndOfResultsMessage = () => {
+  iziToast.info({
+    title: 'End of Results',
+    message: "We're sorry, but you've reached the end of search results."
+  });
+};
 
 export const renderImages = (images, container) => {
   const markup = images.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
@@ -26,6 +32,7 @@ export const renderImages = (images, container) => {
       </li>
     `;
   }).join('');
-  container.innerHTML = markup;  
+  container.insertAdjacentHTML('beforeend', markup);
 };
+
 
