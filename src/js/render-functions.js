@@ -21,13 +21,13 @@ export const renderImages = (images, container) => {
     return `
       <li class="gallery-item">
         <a href="${largeImageURL}">
-          <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+          <img src="${webformatURL}" alt="${tags}" loading="lazy" width="360" height="200" />
         </a>
         <div class="info">
-          <p><b>Likes:</b> ${likes}</p>
-          <p><b>Views:</b> ${views}</p>
-          <p><b>Comments:</b> ${comments}</p>
-          <p><b>Downloads:</b> ${downloads}</p>
+          <p class="info-text"><b>Likes:</b> ${likes}</p>
+          <p class="info-text"><b>Views:</b> ${views}</p>
+          <p class="info-text"><b>Comments:</b> ${comments}</p>
+          <p class="info-text"><b>Downloads:</b> ${downloads}</p>
         </div>
       </li>
     `;
